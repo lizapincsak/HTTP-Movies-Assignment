@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 
 const initialItem = {
+    id: '',
     title: '',
     director: '',
     metascore:'',
@@ -22,7 +23,7 @@ const UpdateForm = (props) => {
         .catch((err)=> {
             console.log(err)
         })
-    }, [])
+    }, [id])
 
     const changeHandles = e => {
         setItem({
@@ -37,15 +38,22 @@ const UpdateForm = (props) => {
             .put(`http://localhost:5000/api/movies/${id}`, item)
             .then((res) => {
                 console.log(res)
-                props.setMovieList(res.data);
+                props.setMovieList([
+                    ...props.movieList.map(movie => {
+                        if(movie.id === item.id){
+                            return item
+                        } else {
+                            return movie
+                        }
+                    })
+                ]);
+                setItem(initialItem)
                 push(`/movies`)
             })
             .catch((err) => {
                 console.log(err)
             })
     }
-
-   
 
     return(
         <div>
